@@ -1,19 +1,22 @@
 import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 export default function HomePage() {
+    const router = useRouter();
     const [zielzeit, setZielzeit] = useState<string>('');
     const [wochen, setWochen] = useState<number | null>(null);
     const [einheiten, setEinheiten] = useState<number | null>(null);
-    const history = useHistory();
 
     const handleSubmit = () => {
         if (wochen !== null && einheiten !== null && zielzeit) {
             const trainingsplan = generateTrainingsplan(zielzeit, wochen, einheiten);
-            history.push('/dein-plan', { trainingsplan });
-        } else {
+            router.push({
+                pathname: '/dein-plan',
+                query: { trainingsplan: JSON.stringify(trainingsplan) },
+            });
+            } else {
             alert("Bitte wähle eine Zielzeit, die Anzahl der Wochen und die Einheiten pro Woche aus.");
         }
     };
