@@ -1,12 +1,28 @@
 import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export default function HomePage() {
+    const [zielzeit, setZielzeit] = useState<string>('');
+    const [wochen, setWochen] = useState<number | null>(null);
+    const [einheiten, setEinheiten] = useState<number | null>(null);
+    const history = useHistory();
+
+    const handleSubmit = () => {
+        if (wochen !== null && einheiten !== null && zielzeit) {
+            const trainingsplan = generateTrainingsplan(zielzeit, wochen, einheiten);
+            history.push('/dein-plan', { trainingsplan });
+        } else {
+            alert("Bitte wähle eine Zielzeit, die Anzahl der Wochen und die Einheiten pro Woche aus.");
+        }
+    };
+
     return (
       <Main_Layout>
         <div className={styles['bg-image']}>
         
-          <p>Wähle dein Trainingsziel:</p>
+          {/* <p>Wähle dein Trainingsziel:</p>
           <div className="btn-group dropend">
               <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Trainingsziel
@@ -15,7 +31,7 @@ export default function HomePage() {
                   <li><a className="dropdown-item" href="#">10km-Lauf</a></li>
                   <li><a className="dropdown-item" href="#">Halbmarathon</a></li>
               </ul>
-          </div>
+          </div> */}
           <br />
           <br />
           <p>Wie viele Wochen hast du Zeit?</p>
@@ -24,15 +40,13 @@ export default function HomePage() {
                   Wochen
               </button>
               <ul className="dropdown-menu">
-                  <li><a className="dropdown-item" href="#">4</a></li>
-                  <li><a className="dropdown-item" href="#">5</a></li>
-                  <li><a className="dropdown-item" href="#">6</a></li>
-                  <li><a className="dropdown-item" href="#">7</a></li>
-                  <li><a className="dropdown-item" href="#">8</a></li>
-                  <li><a className="dropdown-item" href="#">9</a></li>
-                  <li><a className="dropdown-item" href="#">10</a></li>
-                  <li><a className="dropdown-item" href="#">11</a></li>
-                  <li><a className="dropdown-item" href="#">12</a></li>
+              {[4, 5, 6, 7, 8, 9, 10, 11, 12].map((value) => (
+                        <li key={value}>
+                            <a className="dropdown-item" onClick={() => setWochen(value)}>
+                                {value}
+                            </a>
+                        </li>
+                    ))}
               </ul>
           </div>
           <br />
@@ -43,12 +57,13 @@ export default function HomePage() {
                   Zielzeit
               </button>
               <ul className="dropdown-menu">
-                  <li><a className="dropdown-item" href="#">Hauptsache ankommen / ca. 2:30 h</a></li>
-                  <li><a className="dropdown-item" href="#">2:10 h</a></li>
-                  <li><a className="dropdown-item" href="#">unter 2:00 h</a></li>
-                  <li><a className="dropdown-item" href="#">unter 1:50 h</a></li>
-                  <li><a className="dropdown-item" href="#">unter 1:40 h</a></li>
-                  <li><a className="dropdown-item" href="#">unter 1:30 h</a></li>
+              {['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h', '1:30 h'].map((value) => (
+                        <li key={value}>
+                            <a className="dropdown-item" onClick={() => setZielzeit(value)}>
+                                {value}
+                            </a>
+                        </li>
+                    ))}
               </ul>
           </div>
           <br />
@@ -59,18 +74,35 @@ export default function HomePage() {
                   Tage pro Woche
               </button>
               <ul className="dropdown-menu">
-                  <li><a className="dropdown-item" href="#">2</a></li>
-                  <li><a className="dropdown-item" href="#">3</a></li>
-                  <li><a className="dropdown-item" href="#">4</a></li>
-                  <li><a className="dropdown-item" href="#">5</a></li>
-                  <li><a className="dropdown-item" href="#">6</a></li>
+              {[2, 3, 4, 5, 6].map((value) => (
+                        <li key={value}>
+                            <a className="dropdown-item" onClick={() => setEinheiten(value)}>
+                                {value}
+                            </a>
+                        </li>
+                    ))}
               </ul>
           </div>
           <br />
           <br />
-          <input className="btn btn-primary" type="submit" value="Plan erstellen"></input>
+          <input className="btn btn-primary" type="button" value="Plan erstellen" onClick={handleSubmit} />
         </div>
       </Main_Layout>
     );
   }
+  
+const generateTrainingsplan = (zielzeit: string, wochen: number, einheiten: number) => {
+    // Logik zur Generierung des Trainingsplans basierend auf zielzeit und wochen
+    // Beispiel: Rückgabe eines einfachen Plans
+    return {
+        wochen: wochen,
+        einheiten: einheiten,
+        zielzeit: zielzeit,
+        plan: [
+            { woche: 1, trainingseinheit: 'Lauf 3x pro Woche' },
+            { woche: 2, trainingseinheit: 'Lauf 4x pro Woche' },
+            // Füge hier weitere Einheiten hinzu
+        ],
+    };
+};
   
