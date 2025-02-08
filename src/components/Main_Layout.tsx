@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from './Main_Layout.module.css';
 import { ReactNode } from "react";
 
 interface LayoutProps {
