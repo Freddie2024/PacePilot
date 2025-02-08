@@ -64,15 +64,28 @@ export default function DeinPlan() {
     return (
         <div className="container mt-4">
             <h1>Dein Trainingsplan</h1>
-            <h2>Zielzeit: {parsedPlan.zielzeit}</h2>                    
-            <button className="btn btn-primary ms-2" onClick={() => router.push('/settings')}>Zielzeit ändern</button>
-         
+            <h2>
+                <span className="badge bg-info text-dark me-2">Zielzeit: {parsedPlan.zielzeit}</span>
+                <button className="btn btn-primary" onClick={() => router.push('/home')}>
+                    Zielzeit ändern
+                </button>
+            </h2>
             <div className="mb-3">
-                <div className="row">
+            <div className="d-none d-md-flex justify-content-between flex-wrap">
+                    {Array.from({ length: totalWeeks }, (_, index) => (
+                        <span
+                            className={`badge ${index < completedWeeks ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
+                            key={index}
+                        >
+                            Woche {index + 1}
+                        </span>
+                    ))}
+                </div>
+                <div className="row d-md-none">
                     {Array.from({ length: totalWeeks }, (_, index) => (
                         <div className="col-4 mb-2" key={index}>
                             <span
-                                className={`badge ms-2 me-2 ${index < completedWeeks ? 'bg-success' : 'bg-secondary'}`}
+                                className={`badge ${index < completedWeeks ? 'bg-success' : 'bg-secondary'} w-100`}
                             >
                                 Woche {index + 1}
                             </span>
