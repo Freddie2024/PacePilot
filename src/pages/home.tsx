@@ -2,6 +2,9 @@ import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Header from '@/components/header';
+import Navbar from '@/components/navbar';
+import DropdownMenu from '@/components/DropdownMenu';
 
 export default function HomePage() {
     const router = useRouter();
@@ -23,6 +26,7 @@ export default function HomePage() {
 
     return (
       <Main_Layout>
+        <Header />
         <div className={styles['bg-image']}>
         
           {/* <p>Wähle dein Trainingsziel:</p>
@@ -38,58 +42,32 @@ export default function HomePage() {
           <br />
           <br />
           <p>Wie viele Wochen hast du Zeit?</p>
-          <div className="btn-group dropend">
-              <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Wochen
-              </button>
-              <ul className="dropdown-menu">
-              {[4, 5, 6, 7, 8, 9, 10, 11, 12].map((value) => (
-                        <li key={value}>
-                            <a className="dropdown-item" onClick={() => setWochen(value)}>
-                                {value}
-                            </a>
-                        </li>
-                    ))}
-              </ul>
-          </div>
+          <DropdownMenu
+                title="Wochen"
+                options={['4', '5', '6', '7', '8', '9', '10', '11', '12']}
+                onSelect={(value) => setWochen(parseInt(value))}
+            />
           <br />
           <br />
           <p>In welcher Zeit willst du ans Ziel kommen?</p>
-          <div className="btn-group dropend">
-              <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Zielzeit
-              </button>
-              <ul className="dropdown-menu">
-              {['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h', '1:30 h'].map((value) => (
-                        <li key={value}>
-                            <a className="dropdown-item" onClick={() => setZielzeit(value)}>
-                                {value}
-                            </a>
-                        </li>
-                    ))}
-              </ul>
-          </div>
+          <DropdownMenu
+                title="Zielzeit"
+                options={['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h', '1:30 h']}
+                onSelect={setZielzeit}
+            />
           <br />
           <br />
           <p>Wie oft pro Woche kannst du trainieren?</p>
-          <div className="btn-group dropend">
-              <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Tage pro Woche
-              </button>
-              <ul className="dropdown-menu">
-              {[2, 3, 4, 5, 6].map((value) => (
-                        <li key={value}>
-                            <a className="dropdown-item" onClick={() => setEinheiten(value)}>
-                                {value}
-                            </a>
-                        </li>
-                    ))}
-              </ul>
-          </div>
+          <DropdownMenu
+                title="Einheiten pro Woche"
+                options={['2', '3', '4', '5', '6']}
+                onSelect={(value) => setEinheiten(parseInt(value))}
+            />
           <br />
           <br />
           <input className="btn btn-primary" type="button" value="Plan erstellen" onClick={handleSubmit} />
         </div>
+        <Navbar />
       </Main_Layout>
     );
   }
