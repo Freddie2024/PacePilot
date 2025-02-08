@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from './Main_Layout.module.css';
 import { ReactNode } from "react";
 
 interface LayoutProps {
@@ -16,14 +15,14 @@ export default function Main_Layout({ children }: LayoutProps) {
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
             </Head>
-            <header className="text-bg-light text-center py-3">
+            {/* <header className="text-bg-light text-center py-3">
                 <div className="container">
                     <h1>PacePilot - Dein Guide zum perfekten Lauf-Tempo</h1>
                 </div>
-            </header>
+            </header> */}
             <div className="layout">{children}               
             </div>
-            <nav className="navbar navbar-light fixed-bottom bg-light">
+            {/* <nav className="navbar navbar-light fixed-bottom bg-light">
                 <div className="container-fluid justify-content-around">
                     <div className="text-center">
                         <i className="bi bi-house" style={{ fontSize: '24px' }}></i>
@@ -42,7 +41,7 @@ export default function Main_Layout({ children }: LayoutProps) {
                         <div style={{ fontSize: '10px' }}>FAQ</div>
                     </div>
                 </div>
-            </nav>
+            </nav> */}
         </>
     );
 }
