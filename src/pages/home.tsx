@@ -1,26 +1,25 @@
 import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
+import Header from '@/components/Header';
+import Navbar from '@/components/Navbar';
+import DropdownMenu from '@/components/DropdownMenu';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Header from '@/components/header';
-import Navbar from '@/components/navbar';
-import DropdownMenu from '@/components/DropdownMenu';
+import { generateTrainingsplan } from '@/utils/generateTrainingsplan';
 
 export default function HomePage() {
     const router = useRouter();
     const [zielzeit, setZielzeit] = useState<string>('');
-    const [wochen, setWochen] = useState<number | null>(null);
-    const [einheiten, setEinheiten] = useState<number | null>(null);
-
+   
     const handleSubmit = () => {
-        if (wochen !== null && einheiten !== null && zielzeit) {
-            const trainingsplan = generateTrainingsplan(zielzeit, wochen, einheiten);
+        if (zielzeit) {
+            const trainingsplan = generateTrainingsplan(zielzeit);
             router.push({
                 pathname: '/dein-plan',
                 query: { trainingsplan: JSON.stringify(trainingsplan) },
             });
             } else {
-            alert("Bitte wähle eine Zielzeit, die Anzahl der Wochen und die Einheiten pro Woche aus.");
+            alert("Bitte wähle eine Zielzeit.");
         }
     };
 
@@ -39,14 +38,14 @@ export default function HomePage() {
                   <li><a className="dropdown-item" href="#">Halbmarathon</a></li>
               </ul>
           </div> */}
-          <br />
+          {/* <br />
           <br />
           <p>Wie viele Wochen hast du Zeit?</p>
           <DropdownMenu
                 title="Wochen"
                 options={['4', '5', '6', '7', '8', '9', '10', '11', '12']}
                 onSelect={(value) => setWochen(parseInt(value))}
-            />
+            /> */}
           <br />
           <br />
           <p>In welcher Zeit willst du ans Ziel kommen?</p>
@@ -57,33 +56,17 @@ export default function HomePage() {
             />
           <br />
           <br />
-          <p>Wie oft pro Woche kannst du trainieren?</p>
+          {/* <p>Wie oft pro Woche kannst du trainieren?</p>
           <DropdownMenu
                 title="Einheiten pro Woche"
                 options={['2', '3', '4', '5', '6']}
                 onSelect={(value) => setEinheiten(parseInt(value))}
             />
           <br />
-          <br />
+          <br /> */}
           <input className="btn btn-primary" type="button" value="Plan erstellen" onClick={handleSubmit} />
         </div>
         <Navbar />
       </Main_Layout>
     );
   }
-  
-const generateTrainingsplan = (zielzeit: string, wochen: number, einheiten: number) => {
-    // Logik zur Generierung des Trainingsplans basierend auf zielzeit und wochen
-    // Beispiel: Rückgabe eines einfachen Plans
-    return {
-        wochen: wochen,
-        einheiten: einheiten,
-        zielzeit: zielzeit,
-        plan: [
-            { woche: 1, trainingseinheit: 'Lauf 3x pro Woche' },
-            { woche: 2, trainingseinheit: 'Lauf 4x pro Woche' },
-            // Füge hier weitere Einheiten hinzu
-        ],
-    };
-};
-  
