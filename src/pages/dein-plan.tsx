@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import WeekCard from '@/components/WeekCard';
 
 interface Training {
     [key: string]: string;
@@ -61,49 +62,39 @@ export default function DeinPlan() {
     const totalWeeks = parsedPlan ? parsedPlan.plan.length : 0;
 
     return (
-        <div>
+        <div className="container mt-4">
             <h1>Dein Trainingsplan</h1>
-            <p>
-                {completedWeeks} von {totalWeeks} geschafft, noch {totalWeeks - completedWeeks} weitere bis zum Halbmarathon.
-            </p>
-            {parsedPlan ? (
-                <div>
-                    <h2>Zielzeit: {parsedPlan.zielzeit}</h2>                    
-                    <button onClick={() => router.push('/settings')}>Zielzeit ändern</button>
-
-                    <ul>
-                        {parsedPlan.plan.map((einheit: Einheit, index: number) => (
-                            <li key={index}>
-                                Woche {einheit.woche}:
-                                <ul>
-                                    {Object.entries(einheit.training).map(([day, training]) => (
-                                        <li key={day}>
-                                            <input
-                                                type="checkbox"
-                                                checked={!!completedTrainings[`${einheit.woche}-${day}`]}
-                                                onChange={() => handleCheckboxChange(day, einheit.woche)}
-                                            />
-                                            {day}: {training}
-                                            <select
-                                                value={completedTrainings[`${einheit.woche}-${day}`] || ''}
-                                                onChange={(e) => handleRatingChange(day, einheit.woche, e.target.value)}
-                                            >
-                                                <option value="">Feedback</option>
-                                                <option value="easy">zu leicht</option>
-                                                <option value="just-right">genau richtig</option>
-                                                <option value="hard">zu anstrengend</option>
-                                                <option value="missed">Training ausgefallen</option>
-                                            </select>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
+            <h2>Zielzeit: {parsedPlan.zielzeit}</h2>                    
+            <button className="btn btn-primary ms-2" onClick={() => router.push('/settings')}>Zielzeit ändern</button>
+         
+            <div className="mb-3">
+                <div className="row">
+                    {Array.from({ length: totalWeeks }, (_, index) => (
+                        <div className="col-4 mb-2" key={index}>
+                            <span
+                                className={`badge ms-2 me-2 ${index < completedWeeks ? 'bg-success' : 'bg-secondary'}`}
+                            >
+                                Woche {index + 1}
+                            </span>
+                        </div>
+                    ))}
                 </div>
-            ) : (
-                <p>Kein Trainingsplan verfügbar.</p>
-            )}
+            </div>
+            <div className="row">
+                {parsedPlan ? (
+                    parsedPlan.plan.map((einheit: Einheit, index: number) => (
+                        <WeekCard
+                            key={index}
+                            einheit={einheit}
+                            completedTrainings={completedTrainings}
+                            handleCheckboxChange={handleCheckboxChange}
+                            handleRatingChange={handleRatingChange}
+                        />
+                    ))
+                ) : (
+                    <p>Kein Trainingsplan verfügbar.</p>
+                )}
+            </div>
         </div>
     );
 }
