@@ -1,7 +1,7 @@
 import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
 import Header from '@/components/Header';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/Navbar'; 
 import DropdownMenu from '@/components/DropdownMenu';
 import { useState } from 'react';
 import { useRouter } from 'next/router';

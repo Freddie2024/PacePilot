@@ -31,17 +31,31 @@ export default function DeinPlan() {
             ...prev,
             [`${woche}-${day}`]: prev[`${woche}-${day}`] ? '' : 'completed',
         }));
-
-        if (!completedTrainings[`${woche}-${day}`]) {
-            setCompletedWeeks((prev) => Math.max(prev, woche));
-        }
     };
 
     const handleRatingChange = (day: string, woche: number, rating: string) => {
-        setCompletedTrainings((prev) => ({
-            ...prev,
-            [`${woche}-${day}`]: rating,
-        }));
+        setCompletedTrainings((prevTrainings) => {
+            const updatedTrainings = {
+                ...prevTrainings,
+                [`${woche}-${day}`]: rating,
+            };
+
+            // Überprüfen, ob alle Trainings der Woche bewertet wurden
+            const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training); // Trainings für die aktuelle Woche
+            const ratedCount = allTrainings.filter((trainingDay) => {
+                return (updatedTrainings[`${woche}-${trainingDay}`] !== ''); // Check if the training has been rated
+            }).length;
+
+            // Update completed weeks based on ratedCount
+            if (ratedCount === allTrainings.length) {
+                setCompletedWeeks((prevWeeks) => Math.max(prevWeeks, woche)); // Zähle die Woche nur, wenn alle Trainings bewertet wurden
+            } else {
+                // Optional: Wenn nicht alle bewertet sind, die Woche nicht zählen
+                setCompletedWeeks((prevWeeks) => Math.min(prevWeeks, woche - 1)); // Reduziere die Anzahl der erledigten Wochen, falls nötig
+            }
+
+            return updatedTrainings; // Return the updated trainings state
+        });
     };
 
     const totalWeeks = parsedPlan ? parsedPlan.plan.length : 0;
@@ -74,10 +88,11 @@ export default function DeinPlan() {
                                                 value={completedTrainings[`${einheit.woche}-${day}`] || ''}
                                                 onChange={(e) => handleRatingChange(day, einheit.woche, e.target.value)}
                                             >
-                                                <option value="">Bewertung</option>
-                                                <option value="easy">War total easy</option>
-                                                <option value="just-right">Genau richtig</option>
-                                                <option value="hard">War zu anstrengend</option>
+                                                <option value="">Feedback</option>
+                                                <option value="easy">zu leicht</option>
+                                                <option value="just-right">genau richtig</option>
+                                                <option value="hard">zu anstrengend</option>
+                                                <option value="missed">Training ausgefallen</option>
                                             </select>
                                         </li>
                                     ))}
