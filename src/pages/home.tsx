@@ -6,20 +6,44 @@ import DropdownMenu from '@/components/DropdownMenu';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { generateTrainingsplan } from '@/utils/generateTrainingsplan';
+import { Zielzeit } from '@/data/trainingsPlans';
+import { Progress } from '@/types/progress';
 
 export default function HomePage() {
     const router = useRouter();
-    const [zielzeit, setZielzeit] = useState<string>('');
+    const [zielzeit, setZielzeit] = useState<Zielzeit | ''>('');
    
     const handleSubmit = () => {
         if (zielzeit) {
-            const trainingsplan = generateTrainingsplan(zielzeit);
+            const newPlan = generateTrainingsplan(zielzeit);
+            const oldProgress: Progress = JSON.parse(localStorage.getItem('completedTrainings') || '{}');
+            const completedWeeks = Math.max(...Object.keys(oldProgress).map(Number)); // Get the highest completed week
+
+            // Calculate remaining weeks based on completed weeks
+            const remainingWeeks = newPlan.plan.slice(completedWeeks);
+
+            // Merge old progress with the new plan
+            const mergedProgress = remainingWeeks.reduce((acc, week) => {
+                const weekKey = week.woche;
+                acc[weekKey] = oldProgress[weekKey] || '';
+                return acc;
+            }, {} as Progress);
+
+            // Save the merged progress back to local storage
+            localStorage.setItem('completedTrainings', JSON.stringify(mergedProgress));
+
             router.push({
                 pathname: '/dein-plan',
-                query: { trainingsplan: JSON.stringify(trainingsplan) },
+                query: { trainingsplan: JSON.stringify(newPlan) },
             });
-            } else {
-            alert("Bitte wähle eine Zielzeit.");
+        } else {
+            alert("Bitte wähle eine Zielzeit aus.");
+        }
+    };
+
+    const handleSelectZielzeit = (value: string) => {
+        if (value === '' || ['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h', '1:30 h'].includes(value)) {
+            setZielzeit(value as Zielzeit); // Type assertion to Zielzeit
         }
     };
 
@@ -52,7 +76,7 @@ export default function HomePage() {
           <DropdownMenu
                 title="Zielzeit"
                 options={['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h', '1:30 h']}
-                onSelect={setZielzeit}
+                onSelect={handleSelectZielzeit}
             />
           <br />
           <br />

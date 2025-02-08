@@ -51,4 +51,4 @@ export const trainingsPlans = {
     },
 } as const;
 
-export type Zielzeit = keyof typeof trainingsPlans;
+export type Zielzeit = '2:30 h' | '2:10 h' | '2:00 h' | '1:50 h' | '1:40 h';
