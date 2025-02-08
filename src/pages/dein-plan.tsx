@@ -44,9 +44,14 @@ export default function DeinPlan() {
         }));
     };
 
+    const totalWeeks = parsedPlan ? parsedPlan.plan.length : 0;
+
     return (
         <div>
             <h1>Dein Trainingsplan</h1>
+            <p>
+                {completedWeeks} von {totalWeeks} geschafft, noch {totalWeeks - completedWeeks} weitere bis zum Halbmarathon.
+            </p>
             {parsedPlan ? (
                 <div>
                     <h2>Zielzeit: {parsedPlan.zielzeit}</h2>                    
