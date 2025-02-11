@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import WeekCard from '@/components/WeekCard';
 
 interface Training {
     [key: string]: string;
@@ -31,64 +32,85 @@ export default function DeinPlan() {
             ...prev,
             [`${woche}-${day}`]: prev[`${woche}-${day}`] ? '' : 'completed',
         }));
-
-        if (!completedTrainings[`${woche}-${day}`]) {
-            setCompletedWeeks((prev) => Math.max(prev, woche));
-        }
     };
 
     const handleRatingChange = (day: string, woche: number, rating: string) => {
-        setCompletedTrainings((prev) => ({
-            ...prev,
-            [`${woche}-${day}`]: rating,
-        }));
+        setCompletedTrainings((prevTrainings) => {
+            const updatedTrainings = {
+                ...prevTrainings,
+                [`${woche}-${day}`]: rating,
+            };
+
+            // Überprüfen, ob alle Trainings der Woche bewertet wurden
+            const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training); // Trainings für die aktuelle Woche
+            const ratedCount = allTrainings.filter((trainingDay) => {
+                return (updatedTrainings[`${woche}-${trainingDay}`] !== ''); // Check if the training has been rated
+            }).length;
+
+            // Update completed weeks based on ratedCount
+            if (ratedCount === allTrainings.length) {
+                setCompletedWeeks((prevWeeks) => Math.max(prevWeeks, woche)); // Zähle die Woche nur, wenn alle Trainings bewertet wurden
+            } else {
+                // Optional: Wenn nicht alle bewertet sind, die Woche nicht zählen
+                setCompletedWeeks((prevWeeks) => Math.min(prevWeeks, woche - 1)); // Reduziere die Anzahl der erledigten Wochen, falls nötig
+            }
+
+            return updatedTrainings; // Return the updated trainings state
+        });
     };
 
     const totalWeeks = parsedPlan ? parsedPlan.plan.length : 0;
 
-    return (
-        <div>
-            <h1>Dein Trainingsplan</h1>
-            <p>
-                {completedWeeks} von {totalWeeks} geschafft, noch {totalWeeks - completedWeeks} weitere bis zum Halbmarathon.
-            </p>
-            {parsedPlan ? (
-                <div>
-                    <h2>Zielzeit: {parsedPlan.zielzeit}</h2>                    
-                    <button onClick={() => router.push('/settings')}>Zielzeit ändern</button>
+    const colors = ['#f8d7da', '#d4edda', '#d1ecf1', '#fff3cd', '#cce5ff'];
 
-                    <ul>
-                        {parsedPlan.plan.map((einheit: Einheit, index: number) => (
-                            <li key={index}>
-                                Woche {einheit.woche}:
-                                <ul>
-                                    {Object.entries(einheit.training).map(([day, training]) => (
-                                        <li key={day}>
-                                            <input
-                                                type="checkbox"
-                                                checked={!!completedTrainings[`${einheit.woche}-${day}`]}
-                                                onChange={() => handleCheckboxChange(day, einheit.woche)}
-                                            />
-                                            {day}: {training}
-                                            <select
-                                                value={completedTrainings[`${einheit.woche}-${day}`] || ''}
-                                                onChange={(e) => handleRatingChange(day, einheit.woche, e.target.value)}
-                                            >
-                                                <option value="">Bewertung</option>
-                                                <option value="easy">War total easy</option>
-                                                <option value="just-right">Genau richtig</option>
-                                                <option value="hard">War zu anstrengend</option>
-                                            </select>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
+    return (
+        <div className="container pt-4 bg-light bg-gradient px-3">
+            <h1 className="px-3">Dein Trainingsplan</h1>
+            <h2 className="d-flex align-items-stretch gap-2 px-3">
+                <span className="badge bg-info text-dark d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem'}}>Zielzeit: {parsedPlan.zielzeit}</span>
+                <button className="btn btn-primary d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem' }}>                    Zielzeit ändern
+                    </button>
+            </h2>
+            <div className="mb-3">
+                <div className="d-none d-md-flex justify-content-between px-3">
+                    {Array.from({ length: totalWeeks }, (_, index) => (
+                        <span
+                            className={`badge ${index < completedWeeks ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
+                            key={index}
+                        >
+                            Woche {index + 1}
+                        </span>
+                    ))}
                 </div>
-            ) : (
-                <p>Kein Trainingsplan verfügbar.</p>
-            )}
+                <div className="row d-md-none px-3">
+                    {Array.from({ length: totalWeeks }, (_, index) => (
+                        <div className="col-4 mb-2" key={index}>
+                            <span
+                                className={`badge ${index < completedWeeks ? 'bg-success' : 'bg-secondary'} w-100`}
+                            >
+                                Woche {index + 1}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className="row px-3">
+                {parsedPlan ? (
+                    parsedPlan.plan.map((einheit: Einheit, index: number) => (
+                        <div key={index} className="col-12 col-md-6 col-lg-4 mb-2">
+                            <WeekCard
+                                einheit={einheit}
+                                completedTrainings={completedTrainings}
+                                handleCheckboxChange={handleCheckboxChange}
+                                handleRatingChange={handleRatingChange}
+                                backgroundColor={colors[index % colors.length]}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <p>Kein Trainingsplan verfügbar.</p>
+                )}
+            </div>
         </div>
     );
 }
