@@ -1,16 +1,12 @@
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-export default function SetupPage() {
-  const router = useRouter();
+export default function Index() {
+    const router = useRouter();
 
-  function handleSetupComplete() {
-    router.push("/home");
-  }
+    useEffect(() => {
+        router.replace("/home");
+    }, []);
 
-  return (
-    <div>
-      <h1 className="display-1">Dein Ziel:</h1>
-      <button onClick={handleSetupComplete}>Plan erstellen!</button>
-    </div>
-  );
+    return null;
 }
