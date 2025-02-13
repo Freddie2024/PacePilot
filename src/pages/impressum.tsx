@@ -1,4 +1,4 @@
-export default function Impressum {
+export default function Impressum() {
     return (
         <p>Image by 
             <a href="https://pixabay.com/users/surprising_snapshots-11873433/"
