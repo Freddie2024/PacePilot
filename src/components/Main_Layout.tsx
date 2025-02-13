@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import Head from 'next/head';
 import { ReactNode } from "react";
 

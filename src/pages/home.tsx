@@ -11,16 +11,16 @@ export default function HomePage() {
     const [zielzeit, setZielzeit] = useState<Zielzeit | ''>('');
    
     const handleSubmit = () => {
-        if (zielzeit) {
+        if (!zielzeit) {
+            alert("Bitte wähle eine Zielzeit aus.");
+            return;
+        }
             const newPlan = generateTrainingsplan(zielzeit);
            
             router.push({
                 pathname: '/dein-plan',
                 query: { trainingsplan: JSON.stringify(newPlan) },
             });
-        } else {
-            alert("Bitte wähle eine Zielzeit aus.");
-        }
     };
 
     const handleZielzeitSelect = (value: string) => {
@@ -54,7 +54,7 @@ export default function HomePage() {
                     </button>
                 ))}
                 </div>
-
+        
           <br />
           <br />
           <br />
