@@ -8,7 +8,9 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (typeof window !== "undefined") {
       // eslint-disable-next-line global-require
-      require("bootstrap/dist/js/bootstrap.bundle.min.js");
+      import("bootstrap/dist/js/bootstrap.bundle.min.js")
+      .then(() => console.log("Bootstrap JS loaded"))
+      .catch((err) => console.error("Error loading Bootstrap JS:", err));
     }
   }, []);
 
