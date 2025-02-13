@@ -18,46 +18,94 @@ export default function DeinPlan() {
     const parsedPlan = trainingsplan ? JSON.parse(trainingsplan as string) : null;
 
     const [completedTrainings, setCompletedTrainings] = useState<{ [key: string]: string }>({});
-    const [completedWeeks, setCompletedWeeks] = useState<number>(0);
+    const [completedWeeks, setCompletedWeeks] = useState<number[]>([]);
 
     useEffect(() => {
         const savedProgress = localStorage.getItem('completedTrainings');
         if (savedProgress) {
-            setCompletedTrainings(JSON.parse(savedProgress));
+            const parsedProgress = JSON.parse(savedProgress);
+            console.log("Laden von localStorage:", parsedProgress);
+            setCompletedTrainings(parsedProgress);  // Fortschritt im State setzen
+        } else {
+            console.log("Kein gespeicherter Fortschritt gefunden.");
         }
     }, []);
 
-    const handleCheckboxChange = (day: string, woche: number) => {
-        setCompletedTrainings((prev) => ({
-            ...prev,
-            [`${woche}-${day}`]: prev[`${woche}-${day}`] ? '' : 'completed',
-        }));
+    const handleMissedTraining = (day: string, woche: number) => {
+        setCompletedTrainings((prev) => {
+            const updatedTrainings = {
+                ...prev,
+                [`${woche}-${day}`]: 'missed',
+            };
+    
+            localStorage.setItem("completedTrainings", JSON.stringify(updatedTrainings));
+            console.log("🚫 Training als ausgefallen markiert:", updatedTrainings);
+    
+            const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training);
+            const isWeekCompleted = allTrainings.every((trainingDay) => {
+                const key = `${woche}-${trainingDay}`;
+                return updatedTrainings[key] && updatedTrainings[key] !== '';
+            });
+    
+            setCompletedWeeks((prevWeeks) => {
+                if (isWeekCompleted && !prevWeeks.includes(woche)) {
+                    return [...prevWeeks, woche];
+                }
+                return prevWeeks;
+            });
+    
+            return updatedTrainings;
+        });
     };
+    
+    
+    
 
-    const handleRatingChange = (day: string, woche: number, rating: string) => {
+    const handleFeedback = (day: string, woche: number, rating: string) => {
         setCompletedTrainings((prevTrainings) => {
             const updatedTrainings = {
                 ...prevTrainings,
-                [`${woche}-${day}`]: rating,
+                [`${woche}-${day}`]: rating, 
             };
-
-            // Überprüfen, ob alle Trainings der Woche bewertet wurden
-            const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training); // Trainings für die aktuelle Woche
-            const ratedCount = allTrainings.filter((trainingDay) => {
-                return (updatedTrainings[`${woche}-${trainingDay}`] !== ''); // Check if the training has been rated
-            }).length;
-
-            // Update completed weeks based on ratedCount
-            if (ratedCount === allTrainings.length) {
-                setCompletedWeeks((prevWeeks) => Math.max(prevWeeks, woche)); // Zähle die Woche nur, wenn alle Trainings bewertet wurden
-            } else {
-                // Optional: Wenn nicht alle bewertet sind, die Woche nicht zählen
-                setCompletedWeeks((prevWeeks) => Math.min(prevWeeks, woche - 1)); // Reduziere die Anzahl der erledigten Wochen, falls nötig
-            }
-
-            return updatedTrainings; // Return the updated trainings state
+    
+            localStorage.setItem("completedTrainings", JSON.stringify(updatedTrainings));
+            console.log("✅ Feedback gespeichert:", updatedTrainings);
+    
+            const completedWeeksList = Array.from({ length: totalWeeks }, (_, weekIndex) => {
+                const week = weekIndex + 1;
+                const allTrainings = Object.keys(parsedPlan.plan[weekIndex].training);
+                return allTrainings.every((trainingDay) => {
+                    const key = `${week}-${trainingDay}`;
+                    return updatedTrainings[key] && updatedTrainings[key] !== '';
+                }) ? week : null;
+            }).filter(Boolean) as number[]; // Filtert `null`-Werte raus
+    
+            console.log("✅ Neue abgeschlossene Wochen:", completedWeeksList);
+            setCompletedWeeks(completedWeeksList);
+    
+            return updatedTrainings;
         });
     };
+    
+        const handleNeuerPlan = () => {
+        const userConfirmed = window.confirm(
+            "Bist du sicher, dass du einen neuen Plan starten möchtest? Dies wird alle gespeicherten Daten unwiderruflich löschen!"
+        );
+    
+        if (userConfirmed) {
+            localStorage.removeItem("completedTrainings");
+    
+            setCompletedTrainings({});
+            setCompletedWeeks([]);
+    
+            console.log("✅ Fortschritt wurde gelöscht, neuer Plan kann gestartet werden!");
+    
+            router.push("/home");
+        } else {
+            console.log("❌ Planwechsel abgebrochen.");
+        }
+    };
+    
 
     const totalWeeks = parsedPlan ? parsedPlan.plan.length : 0;
 
@@ -67,18 +115,26 @@ export default function DeinPlan() {
         <div className="container pt-4 bg-light bg-gradient px-3">
             <h1 className="px-3">Dein Trainingsplan</h1>
             <h2 className="d-flex align-items-stretch gap-2 px-3">
-                <span className="badge bg-info text-dark d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem'}}>Zielzeit: {parsedPlan.zielzeit}</span>
-                <button className="btn btn-primary d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem' }}>                    Zielzeit ändern
-                    </button>
+                <span className="badge bg-info text-dark d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem'}}>
+                    Zielzeit: {parsedPlan.zielzeit}
+                </span>
+                <button 
+                    className="btn btn-primary d-flex align-items-center justify-content-center px-4" 
+                    style={{ height: '2rem', fontSize: '0.9rem' }}
+                    onClick={handleNeuerPlan}
+                >
+                    Neuer Plan
+                </button>
             </h2>
+
             <div className="mb-3">
                 <div className="d-none d-md-flex justify-content-between px-3">
                     {Array.from({ length: totalWeeks }, (_, index) => (
                         <span
-                            className={`badge ${index < completedWeeks ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
-                            key={index}
-                        >
-                            Woche {index + 1}
+                        key={index}
+                        className={`badge ${completedWeeks.includes(index + 1) ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
+                    >
+                        Woche {index + 1}
                         </span>
                     ))}
                 </div>
@@ -86,7 +142,8 @@ export default function DeinPlan() {
                     {Array.from({ length: totalWeeks }, (_, index) => (
                         <div className="col-4 mb-2" key={index}>
                             <span
-                                className={`badge ${index < completedWeeks ? 'bg-success' : 'bg-secondary'} w-100`}
+                                key={index}
+                                className={`badge ${completedWeeks.includes(index + 1) ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
                             >
                                 Woche {index + 1}
                             </span>
@@ -94,6 +151,7 @@ export default function DeinPlan() {
                     ))}
                 </div>
             </div>
+
             <div className="row px-3">
                 {parsedPlan ? (
                     parsedPlan.plan.map((einheit: Einheit, index: number) => (
@@ -101,8 +159,8 @@ export default function DeinPlan() {
                             <WeekCard
                                 einheit={einheit}
                                 completedTrainings={completedTrainings}
-                                handleCheckboxChange={handleCheckboxChange}
-                                handleRatingChange={handleRatingChange}
+                                handleMissedTraining={handleMissedTraining}
+                                handleFeedback={handleFeedback}
                                 backgroundColor={colors[index % colors.length]}
                             />
                         </div>
