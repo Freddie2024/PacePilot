@@ -1,7 +1,6 @@
 import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
 import Header from '@/components/Header';
-import Navbar from '@/components/Navbar'; 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { generateTrainingsplan } from '@/utils/generateTrainingsplan';
@@ -12,16 +11,16 @@ export default function HomePage() {
     const [zielzeit, setZielzeit] = useState<Zielzeit | ''>('');
    
     const handleSubmit = () => {
-        if (zielzeit) {
+        if (!zielzeit) {
+            alert("Bitte wähle eine Zielzeit aus.");
+            return;
+        }
             const newPlan = generateTrainingsplan(zielzeit);
            
             router.push({
                 pathname: '/dein-plan',
                 query: { trainingsplan: JSON.stringify(newPlan) },
             });
-        } else {
-            alert("Bitte wähle eine Zielzeit aus.");
-        }
     };
 
     const handleZielzeitSelect = (value: string) => {
@@ -55,7 +54,7 @@ export default function HomePage() {
                     </button>
                 ))}
                 </div>
-
+        
           <br />
           <br />
           <br />
@@ -64,7 +63,6 @@ export default function HomePage() {
         </div>
         </div>
 
-        <Navbar />
       </Main_Layout>
     );
   }

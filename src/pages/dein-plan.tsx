@@ -58,9 +58,6 @@ export default function DeinPlan() {
         });
     };
     
-    
-    
-
     const handleFeedback = (day: string, woche: number, rating: string) => {
         setCompletedTrainings((prevTrainings) => {
             const updatedTrainings = {
@@ -116,7 +113,7 @@ export default function DeinPlan() {
             <h1 className="px-3">Dein Trainingsplan</h1>
             <h2 className="d-flex align-items-stretch gap-2 px-3">
                 <span className="badge bg-info text-dark d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem'}}>
-                    Zielzeit: {parsedPlan.zielzeit}
+                Zielzeit: {parsedPlan ? parsedPlan.zielzeit : "Nicht gesetzt"}
                 </span>
                 <button 
                     className="btn btn-primary d-flex align-items-center justify-content-center px-4" 
@@ -159,7 +156,7 @@ export default function DeinPlan() {
                             <WeekCard
                                 einheit={einheit}
                                 completedTrainings={completedTrainings}
-                                handleMissedTraining={handleMissedTraining}
+                                // handleMissedTraining={handleMissedTraining}
                                 handleFeedback={handleFeedback}
                                 backgroundColor={colors[index % colors.length]}
                             />

@@ -12,12 +12,12 @@ interface Einheit {
 interface WeekCardProps {
     einheit: Einheit;
     completedTrainings: { [key: string]: string };
-    handleMissedTraining: (day: string, woche: number) => void;
+    // handleMissedTraining: (day: string, woche: number) => void;
     handleFeedback: (day: string, woche: number, rating: string) => void;
     backgroundColor: string; 
 }
 
-const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handleMissedTraining, handleFeedback, backgroundColor }) => {
+const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handleFeedback, backgroundColor }) => {
     return (
             <div className="col-md-4 mb-4">
                 <div style={{ backgroundColor }} className="card fixed-card">
