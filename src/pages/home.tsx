@@ -1,7 +1,6 @@
 import styles from './home.module.css';
 import Main_Layout from '../components/Main_Layout';
 import Header from '@/components/Header';
-import Navbar from '@/components/Navbar'; 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { generateTrainingsplan } from '@/utils/generateTrainingsplan';
@@ -64,7 +63,6 @@ export default function HomePage() {
         </div>
         </div>
 
-        <Navbar />
       </Main_Layout>
     );
   }
