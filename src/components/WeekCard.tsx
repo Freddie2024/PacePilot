@@ -12,12 +12,12 @@ interface Einheit {
 interface WeekCardProps {
     einheit: Einheit;
     completedTrainings: { [key: string]: string };
-    handleCheckboxChange: (day: string, woche: number) => void;
-    handleRatingChange: (day: string, woche: number, rating: string) => void;
+    handleMissedTraining: (day: string, woche: number) => void;
+    handleFeedback: (day: string, woche: number, rating: string) => void;
     backgroundColor: string; 
 }
 
-const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handleCheckboxChange, handleRatingChange, backgroundColor }) => {
+const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handleMissedTraining, handleFeedback, backgroundColor }) => {
     return (
             <div className="col-md-4 mb-4">
                 <div style={{ backgroundColor }} className="card fixed-card">
@@ -33,21 +33,39 @@ const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handle
                                        <br />
                                    </React.Fragment>
                                ))}
-                                    <select
-                                        value={completedTrainings[`${einheit.woche}-${day}`] || ''}
-                                        onChange={(e) => handleRatingChange(day, einheit.woche, e.target.value)}
-                                    >
-                                        <option value="">Feedback</option>
-                                        <option value="easy">zu leicht</option>
-                                        <option value="just-right">genau richtig</option>
-                                        <option value="hard">zu anstrengend</option>
-                                        <option value="missed">Training ausgefallen</option>
-                                    </select>
-                                    <input
-                                        type="checkbox"
-                                        checked={!!completedTrainings[`${einheit.woche}-${day}`]}
-                                        onChange={() => handleCheckboxChange(day, einheit.woche)}
-                                    />
+                                 <div className="d-flex flex-column align-items-center" style={{ gap: "4px" }}>
+                                <div className="d-flex justify-content-between w-100">
+                                    {[
+                                        { value: "1", emoji: "😂", label: "zu leicht" },
+                                        { value: "2", emoji: "😃", label: "easy" },
+                                        { value: "3", emoji: "🙂", label: "genau richtig" },
+                                        { value: "4", emoji: "😅", label: "anstrengend" },
+                                        { value: "5", emoji: "😰", label: "sehr schwer" },
+                                        { value: "missed", emoji: "❌", label: "ausgefallen" },
+                                    ].map(({ value, emoji, label }) => (
+                                        <label key={value} className="d-flex flex-column align-items-center">
+                                            <input
+                                                type="radio"
+                                                name={`feedback-${einheit.woche}-${day}`}
+                                                value={value}
+                                                checked={completedTrainings[`${einheit.woche}-${day}`] === value}
+                                                onChange={() => handleFeedback(day, einheit.woche, value)}
+                                                style={{ display: "none" }}
+                                            />
+                                            <span
+                                                style={{
+                                                    fontSize: "1.2rem",
+                                                    cursor: "pointer",
+                                                    opacity: completedTrainings[`${einheit.woche}-${day}`] === value ? 1 : 0.5,
+                                                }}
+                                            >
+                                                {emoji}
+                                            </span>
+                                        </label>
+                                    ))}
+                                    </div>
+                                </div>
+
                                 </li>
                             ))}
                         </ul>
