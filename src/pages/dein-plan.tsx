@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import WeekCard from '@/components/WeekCard';
+import styles from './dein-plan.module.css'
 
 interface Training {
     [key: string]: string;
@@ -109,46 +110,55 @@ export default function DeinPlan() {
     const colors = ['#f8d7da', '#d4edda', '#d1ecf1', '#fff3cd', '#cce5ff'];
 
     return (
-        <div className="container pt-4 bg-light bg-gradient px-3">
-            <h1 className="px-3">Dein Trainingsplan</h1>
-            <h2 className="d-flex align-items-stretch gap-2 px-3">
-                <span className="badge bg-info text-dark d-flex align-items-center justify-content-center px-4" style={{ height: '2rem', fontSize: '0.9rem'}}>
-                Zielzeit: {parsedPlan ? parsedPlan.zielzeit : "Nicht gesetzt"}
-                </span>
-                <button 
-                    className="btn btn-primary d-flex align-items-center justify-content-center px-4" 
-                    style={{ height: '2rem', fontSize: '0.9rem' }}
-                    onClick={handleNeuerPlan}
+        <>
+        <div className={`${styles['bg-image']}`}></div>
+        <div className={`container pt-4 px-3 ${styles.parentContainer}`}>
+            <div className="sticky-top bg-light mb-4 rounded" 
+            style={{ zIndex: 1020, top: 10 }}>
+                <h1 className="px-3 pt-3"
                 >
-                    Neuer Plan
-                </button>
-            </h2>
-
-            <div className="mb-3">
-                <div className="d-none d-md-flex justify-content-between px-3">
-                    {Array.from({ length: totalWeeks }, (_, index) => (
-                        <span
-                        key={index}
-                        className={`badge ${completedWeeks.includes(index + 1) ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
+                    Dein Trainingsplan
+                </h1>
+                <h2 className="d-flex align-items-stretch gap-2 px-3">
+                    <span className="badge bg-info text-dark d-flex align-items-center justify-content-center px-4 shadow-sm" 
+                    style={{ height: '2rem', fontSize: '0.9rem'}}
                     >
-                        Woche {index + 1}
-                        </span>
-                    ))}
-                </div>
-                <div className="row d-md-none px-3">
-                    {Array.from({ length: totalWeeks }, (_, index) => (
-                        <div className="col-4 mb-2" key={index}>
+                        Zielzeit: {parsedPlan ? parsedPlan.zielzeit : "Nicht gesetzt"}
+                    </span>
+                    <button 
+                        className="btn btn-primary d-flex align-items-center justify-content-center px-4 shadow-sm" 
+                        style={{ height: '2rem', fontSize: '0.9rem' }}
+                        onClick={handleNeuerPlan}
+                    >
+                        Neuer Plan
+                    </button>
+                </h2>
+
+                <div className="mb-3">
+                    <div className="d-none d-sm-flex justify-content-between px-3">
+                        {Array.from({ length: totalWeeks }, (_, index) => (
                             <span
-                                key={index}
-                                className={`badge ${completedWeeks.includes(index + 1) ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1`}
-                            >
-                                Woche {index + 1}
+                            key={index}
+                            className={`badge ${completedWeeks.includes(index + 1) ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1 shadow-sm`}
+                        >
+                            Woche {index + 1}
                             </span>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <div className="row d-sm-none px-3">
+                        {Array.from({ length: totalWeeks }, (_, index) => (
+                            <div className="col-4 mb-2" key={index}>
+                                <span
+                                    key={index}
+                                    className={`badge ${completedWeeks.includes(index + 1) ? 'bg-success' : 'bg-secondary'} flex-grow-1 mx-1 shadow-sm`}
+                                >
+                                    Woche {index + 1}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
-
             <div className="row px-3">
                 {parsedPlan ? (
                     parsedPlan.plan.map((einheit: Einheit, index: number) => (
@@ -167,5 +177,6 @@ export default function DeinPlan() {
                 )}
             </div>
         </div>
+        </>
     );
 }

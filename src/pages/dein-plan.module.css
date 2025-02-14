@@ -1,0 +1,28 @@
+.bg-image {
+    background-image: url('/runner.jpg'); 
+    background-size: cover;
+    background-position: center;
+    height: 100vh; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.25; 
+    z-index: -1;
+    background-attachment: fixed; 
+  }
+  
+  .parentContainer {
+    position: relative; 
+    z-index: 1;
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* Kopfzeile | Hauptinhalt | Fußzeile */
+    min-height: 150vh;
+  }
+
+ 
+@media (max-width: 768px) {
+    .parentContainer {
+        min-height: 350vh;
+    }
+}
