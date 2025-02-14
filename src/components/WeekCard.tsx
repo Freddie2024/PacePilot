@@ -20,7 +20,7 @@ interface WeekCardProps {
 const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handleFeedback, backgroundColor }) => {
     return (
             <div className="col-md-4 mb-4">
-                <div style={{ backgroundColor }} className="card fixed-card">
+                <div style={{ backgroundColor }} className="card fixed-card shadow">
                     <div className="card-body">
                         <h5 className="card-title">Woche {einheit.woche}</h5>
                         <ul className="list-group list-group-flush">
