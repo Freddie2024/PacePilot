@@ -1,52 +1,59 @@
 import { useState, useEffect } from "react";
+import HourlyForecastChart from "../components/HourlyForecastChart";
+import DailyForecastChart from "../components/DailyForecastChart";
 import axios from "axios";
 
 const Weather = () => {
+  const [lat, setLat] = useState(null);
+  const [lon, setLon] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const getLocation = () => {
+  // Geolocation API verwenden, um den aktuellen Standort abzurufen
+  useEffect(() => {
+    const success = (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      setLat(latitude); // Setze den Latitude-State
+      setLon(longitude); // Setze den Longitude-State
+    };
+
+    const error = () => {
+      console.log("Geolocation failed");
+    };
+
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log("Benutzer-Standort:", latitude, longitude);
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+  }, []); // Dieser Effekt wird nur einmal beim Initialisieren ausgeführt
 
-          try {
-            const { data } = await axios.get(`/api/weather?lat=${latitude}&lon=${longitude}`);
-            setWeather(data);
-          } catch (err) {
-            setError("Fehler beim Abrufen der Wetterdaten.");
-            console.error(err);
-          }
+  // Wetterdaten abrufen, wenn lat und lon gesetzt sind
+  useEffect(() => {
+    if (lat && lon) {
+      const fetchWeather = async () => {
+        try {
+          console.log("Latitude:", lat, "Longitude:", lon);  // Logge die Koordinaten
+          const { data } = await axios.get(`/api/weather?lat=${lat}&lon=${lon}`);
+          setWeather(data); // Setze die Wetterdaten
           setLoading(false);
-        },
-        (error) => {
-          setError("Fehler beim Abrufen des Standorts.");
-          console.error(error);
+        } catch (error) {
+          console.error("Error fetching weather data:", error);
           setLoading(false);
         }
-      );
-    } else {
-      setError("Geolocation wird von diesem Browser nicht unterstützt.");
-      setLoading(false);
-    }
-  };
+      };
 
-  useEffect(() => {
-    getLocation();
-  }, []);
+      fetchWeather();
+    }
+  }, [lat, lon]); // Wetterdaten nur abrufen, wenn lat und lon vorhanden sind
 
   if (loading) return <div>Wird geladen...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <div>
       <h1>Wetter für deinen Standort</h1>
-      <p>Temperatur: {weather.current.temp_c}°C</p>
-      <p>Wetter: {weather.current.condition.text}</p>
-      <p>Wind: {weather.current.wind_kph} km/h</p>
+      <p>Aktuelle Temperatur: {weather.current.temp_c}°C</p>
+      <HourlyForecastChart lat={lat} lon={lon} />
+      <DailyForecastChart lat={lat} lon={lon} />
     </div>
   );
 };

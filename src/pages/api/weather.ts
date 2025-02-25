@@ -10,18 +10,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const response = await axios.get(`http://api.weatherapi.com/v1/current.json`, {
+    const response = await axios.get(`http://api.weatherapi.com/v1/forecast.json`, {
       params: {
         key: apiKey,
         q: `${lat},${lon}`,
+        days: 3,
+        hour: 1,
         lang: "de",
       },
     });
 
-    res.status(200).json(response.data);
+    return res.status(200).json(response.data);
   } catch (error) {
-    console.error("Fehler beim Abrufen der Wetterdaten:", error.message);
-    res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten" });
+    console.error("Fehler beim Abrufen der Wetterdaten:", error.response || error.message);
+    return res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten" });
   }
 }
 
