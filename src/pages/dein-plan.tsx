@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import WeekCard from '@/components/WeekCard';
+import Weather from "../components/Weather";
 import styles from './dein-plan.module.css'
 
 interface Training {
@@ -32,32 +33,32 @@ export default function DeinPlan() {
         }
     }, []);
 
-    const handleMissedTraining = (day: string, woche: number) => {
-        setCompletedTrainings((prev) => {
-            const updatedTrainings = {
-                ...prev,
-                [`${woche}-${day}`]: 'missed',
-            };
+    // const handleMissedTraining = (day: string, woche: number) => {
+    //     setCompletedTrainings((prev) => {
+    //         const updatedTrainings = {
+    //             ...prev,
+    //             [`${woche}-${day}`]: 'missed',
+    //         };
     
-            localStorage.setItem("completedTrainings", JSON.stringify(updatedTrainings));
-            console.log("🚫 Training als ausgefallen markiert:", updatedTrainings);
+    //         localStorage.setItem("completedTrainings", JSON.stringify(updatedTrainings));
+    //         console.log("🚫 Training als ausgefallen markiert:", updatedTrainings);
     
-            const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training);
-            const isWeekCompleted = allTrainings.every((trainingDay) => {
-                const key = `${woche}-${trainingDay}`;
-                return updatedTrainings[key] && updatedTrainings[key] !== '';
-            });
+    //         const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training);
+    //         const isWeekCompleted = allTrainings.every((trainingDay) => {
+    //             const key = `${woche}-${trainingDay}`;
+    //             return updatedTrainings[key] && updatedTrainings[key] !== '';
+    //         });
     
-            setCompletedWeeks((prevWeeks) => {
-                if (isWeekCompleted && !prevWeeks.includes(woche)) {
-                    return [...prevWeeks, woche];
-                }
-                return prevWeeks;
-            });
+    //         setCompletedWeeks((prevWeeks) => {
+    //             if (isWeekCompleted && !prevWeeks.includes(woche)) {
+    //                 return [...prevWeeks, woche];
+    //             }
+    //             return prevWeeks;
+    //         });
     
-            return updatedTrainings;
-        });
-    };
+    //         return updatedTrainings;
+    //     });
+    // };
     
     const handleFeedback = (day: string, woche: number, rating: string) => {
         setCompletedTrainings((prevTrainings) => {
@@ -113,7 +114,7 @@ export default function DeinPlan() {
         <>
         <div className={`${styles['bg-image']}`}></div>
         <div className={`container pt-4 px-3 ${styles.parentContainer}`}>
-            <div className="sticky-top bg-light mb-4 rounded" 
+            <div className="border border-primary sticky-top bg-light mb-4 rounded" 
             style={{ zIndex: 1020, top: 10 }}>
                 <h1 className="px-3 pt-3"
                 >
@@ -159,6 +160,11 @@ export default function DeinPlan() {
                     </div>
                 </div>
             </div>
+
+            <div className="min-h-screen flex items-center justify-center bg-gray-200">
+                <Weather />
+            </div>
+
             <div className="row px-3">
                 {parsedPlan ? (
                     parsedPlan.plan.map((einheit: Einheit, index: number) => (

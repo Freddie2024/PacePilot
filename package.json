@@ -12,6 +12,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
+    "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "next": "15.1.6",
     "react": "^19.0.0",
