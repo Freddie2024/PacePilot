@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const data = await response.json();
     res.status(200).json(data);
   } catch (error) {
-    console.error("Fehler beim Abrufen der Wetterdaten:", error.response?.data || error.message);
+    console.error("Fehler beim Abrufen der Wetterdaten:", (error as Error).message);
     res.status(500).json({ error: "Failed to fetch weather data" });
-  }    
+  }   
 }
 
