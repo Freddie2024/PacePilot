@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const DailyForecastChart = ({ lat, lon }) => {
+interface DailyForecastChartProps {
+  lat: number;
+  lon: number;
+}
+
+const DailyForecastChart: React.FC<DailyForecastChartProps> = ({ lat, lon }) => {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
 
