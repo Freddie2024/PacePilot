@@ -21,12 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json(response.data);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-        console.error("Fehler beim Abrufen der Wetterdaten:", error.response?.data || error.message);
-    } else {
-        console.error("Fehler beim Abrufen der Wetterdaten:", error);
-    }
-    return res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten" });
+    console.error("Fehler beim Abrufen der Wetterdaten:", error.response ? error.response.data : error.message);
+    res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten", details: error.message });
   }
 }
 
