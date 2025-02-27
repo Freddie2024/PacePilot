@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 interface WeatherData {
   forecast: {
@@ -74,8 +73,9 @@ const DailyForecastChart: React.FC<DailyForecastChartProps> = ({ lat, lon }) => 
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const response = await axios.get(`/api/weather?lat=${lat}&lon=${lon}`);
-        setWeather(response.data);
+        const response = await fetch(`/api/weather?lat=52.52&lon=13.405`);
+        const data = await response.json();
+        setWeather(data);
         setLoading(false);
       } catch (error) {
         console.error("Fehler beim Abrufen der Wetterdaten", error);
