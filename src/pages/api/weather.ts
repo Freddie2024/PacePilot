@@ -1,33 +1,26 @@
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { lat, lon } = req.query;
-  const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+  const apiKey = process.env.WEATHER_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ error: "API Key missing" });
+  }
 
   if (!lat || !lon) {
     return res.status(400).json({ error: "Latitude und Longitude sind erforderlich." });
   }
 
   try {
-    const response = await axios.get(`http://api.weatherapi.com/v1/forecast.json`, {
-      params: {
-        key: apiKey,
-        q: `${lat},${lon}`,
-        days: 3,
-        lang: "de",
-      },
-    });
-
-    return res.status(200).json(response.data);
+    const response = await fetch(
+        `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lon}&days=3&lang=de`
+    );
+    const data = await response.json();
+    res.status(200).json(data);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error("Fehler beim Abrufen der Wetterdaten:", error.response?.data || error.message);
-      return res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten", details: error.response?.data });
-    } else {
-      console.error("Fehler beim Abrufen der Wetterdaten:", error);
-      return res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten", details: "Ein unbekannter Fehler ist aufgetreten." });
-    }
-  }
+    console.error("Fehler beim Abrufen der Wetterdaten:", (error as Error).message);
+    res.status(500).json({ error: "Failed to fetch weather data" });
+  }   
 }
 
