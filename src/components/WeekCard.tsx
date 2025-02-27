@@ -12,8 +12,7 @@ interface Einheit {
 interface WeekCardProps {
     einheit: Einheit;
     completedTrainings: { [key: string]: string };
-    // handleMissedTraining: (day: string, woche: number) => void;
-    handleFeedback: (day: string, woche: number, rating: string) => void;
+    handleFeedback: (_day: string, _woche: number, _rating: string) => void;
     backgroundColor: string; 
 }
 
@@ -61,6 +60,7 @@ const WeekCard: React.FC<WeekCardProps> = ({ einheit, completedTrainings, handle
                                             >
                                                 {emoji}
                                             </span>
+                                            <span style={{ display: 'none' }}>{label}</span>
                                         </label>
                                     ))}
                                     </div>

@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import WeekCard from '@/components/WeekCard';
-import styles from './dein-plan.module.css'
+import styles from './dein-plan.module.css';
+import WeatherWithGeolocation from '@/components/WeatherWithGeolocation';
 
 interface Training {
     [key: string]: string;
@@ -31,33 +32,6 @@ export default function DeinPlan() {
             console.log("Kein gespeicherter Fortschritt gefunden.");
         }
     }, []);
-
-    const handleMissedTraining = (day: string, woche: number) => {
-        setCompletedTrainings((prev) => {
-            const updatedTrainings = {
-                ...prev,
-                [`${woche}-${day}`]: 'missed',
-            };
-    
-            localStorage.setItem("completedTrainings", JSON.stringify(updatedTrainings));
-            console.log("🚫 Training als ausgefallen markiert:", updatedTrainings);
-    
-            const allTrainings = Object.keys(parsedPlan.plan[woche - 1].training);
-            const isWeekCompleted = allTrainings.every((trainingDay) => {
-                const key = `${woche}-${trainingDay}`;
-                return updatedTrainings[key] && updatedTrainings[key] !== '';
-            });
-    
-            setCompletedWeeks((prevWeeks) => {
-                if (isWeekCompleted && !prevWeeks.includes(woche)) {
-                    return [...prevWeeks, woche];
-                }
-                return prevWeeks;
-            });
-    
-            return updatedTrainings;
-        });
-    };
     
     const handleFeedback = (day: string, woche: number, rating: string) => {
         setCompletedTrainings((prevTrainings) => {
@@ -112,10 +86,10 @@ export default function DeinPlan() {
     return (
         <>
         <div className={`${styles['bg-image']}`}></div>
-        <div className={`container pt-4 px-3 ${styles.parentContainer}`}>
-            <div className="sticky-top bg-light mb-4 rounded" 
+        <div className={`container pt-3 px-3 ${styles.parentContainer}`}>
+            <div className="border border-primary sticky-top bg-light mb-4 rounded" 
             style={{ zIndex: 1020, top: 10 }}>
-                <h1 className="px-3 pt-3"
+                <h1 className="px-3 pt-2 fs-5"
                 >
                     Dein Trainingsplan
                 </h1>
@@ -133,8 +107,7 @@ export default function DeinPlan() {
                         Neuer Plan
                     </button>
                 </h2>
-
-                <div className="mb-3">
+                <div className="mb-1">
                     <div className="d-none d-sm-flex justify-content-between px-3">
                         {Array.from({ length: totalWeeks }, (_, index) => (
                             <span
@@ -158,7 +131,11 @@ export default function DeinPlan() {
                         ))}
                     </div>
                 </div>
-            </div>
+                <div className="min-h-screen flex items-center justify-center bg-gray-200">
+                     <WeatherWithGeolocation />
+                </div>
+            </div>           
+
             <div className="row px-3">
                 {parsedPlan ? (
                     parsedPlan.plan.map((einheit: Einheit, index: number) => (
@@ -166,7 +143,6 @@ export default function DeinPlan() {
                             <WeekCard
                                 einheit={einheit}
                                 completedTrainings={completedTrainings}
-                                // handleMissedTraining={handleMissedTraining}
                                 handleFeedback={handleFeedback}
                                 backgroundColor={colors[index % colors.length]}
                             />
