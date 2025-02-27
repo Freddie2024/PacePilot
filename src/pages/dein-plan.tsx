@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import WeekCard from '@/components/WeekCard';
-import Weather from "../components/Weather";
 import styles from './dein-plan.module.css';
+import WeatherWithGeolocation from '@/components/WeatherWithGeolocation';
 
 interface Training {
     [key: string]: string;
@@ -132,7 +132,7 @@ export default function DeinPlan() {
                     </div>
                 </div>
                 <div className="min-h-screen flex items-center justify-center bg-gray-200">
-                     <Weather />
+                     <WeatherWithGeolocation />
                 </div>
             </div>           
 

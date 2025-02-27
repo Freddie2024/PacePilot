@@ -15,14 +15,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         key: apiKey,
         q: `${lat},${lon}`,
         days: 3,
-        hour: 1,
         lang: "de",
       },
     });
 
     return res.status(200).json(response.data);
   } catch (error) {
-    console.error("Fehler beim Abrufen der Wetterdaten:", error.response || error.message);
+    if (axios.isAxiosError(error)) {
+        console.error("Fehler beim Abrufen der Wetterdaten:", error.response?.data || error.message);
+    } else {
+        console.error("Fehler beim Abrufen der Wetterdaten:", error);
+    }
     return res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten" });
   }
 }
