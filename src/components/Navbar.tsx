@@ -1,4 +1,5 @@
 export default function Navbar() {
+    //kann ggf. später noch integriert werden, falls weiter features erforderlich
     return (
         <>
         <nav className="navbar navbar-light fixed-bottom bg-light">

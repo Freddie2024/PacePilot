@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import HourlyForecastChart from "../components/HourlyForecastChart";
 import DailyForecastChart from "../components/DailyForecastChart";
 import axios from "axios";
 
@@ -50,10 +49,7 @@ const Weather = () => {
 
   return (
     <div>
-      <h1>Wetter für deinen Standort</h1>
-      <p>Aktuelle Temperatur: {weather.current.temp_c}°C</p>
-      <HourlyForecastChart lat={lat} lon={lon} />
-      <DailyForecastChart lat={lat} lon={lon} />
+       <DailyForecastChart lat={lat} lon={lon} />
     </div>
   );
 };
