@@ -24,7 +24,7 @@ export default function HomePage() {
     };
 
     const handleZielzeitSelect = (value: string) => {
-        if (value === '' || ['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h'].includes(value)) {
+        if (value === '' || ['2:30 h',  '2:20 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h'].includes(value)) {
             setZielzeit(value as Zielzeit); // Type assertion to Zielzeit
         }
     };
@@ -44,7 +44,7 @@ export default function HomePage() {
           <br />
            {/* Vertical Button Group for Zielzeit */}
                 <div className="btn-group-vertical">
-                {['2:30 h', '2:10 h', '2:00 h', '1:50 h', '1:40 h'].map((value) => (
+                {['2:30 h', '2:20 h','2:10 h', '2:00 h', '1:50 h', '1:40 h'].map((value) => (
                     <button
                     key={value}
                     className={`btn btn-info ${zielzeit === value ? 'active' : ''}`}
