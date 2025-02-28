@@ -39,6 +39,69 @@ export const trainingsPlans = {
       }},
     ],
   },
+  '2:20 h': {
+    plan: [
+      { woche: 1, training: { 
+          Di: `7km-Tempolauf in 6:50
+                85% | 11km`, 
+          Do: `DL 75%
+                65 min | 9km`, 
+          Sa: `DL 75%
+                50 min | 7km`, 
+          So: `langer DL 70%
+                100 min | 13-14km` 
+      }},
+      { woche: 2, training: { 
+          Di: `3x1km in 6:25
+                400m Trabpause | 10km`, 
+          Do: `DL 75%
+                65 min | 9km`, 
+          Sa: `DL 75%
+                50 min | 7km`, 
+          So: `langer DL 70%
+                115 min | 15-16km` 
+      }},
+      { woche: 3, training: { 
+          Di: `3x2km in 13:16 (HM-Tempo)
+                6 min Trabpause | 11km`, 
+          Do: `DL 75%
+                65 min | 9km`, 
+          Sa: `DL 75%
+                50 min | 7km`, 
+          So: `langer DL 70%
+                130 min | 17-18km` 
+      }},
+      { woche: 4, training: { 
+          Di: `3x1km in 6:25
+            400m Trabpause | 10km`, 
+          Do: `DL 75% mit Steigerungen
+                50 min | 7km`, 
+          Sa: `Jogging 70% mit Steigerungen
+                20 min`, 
+          So: `10km-Testlauf
+                Zielzeit 63 min | 15km` 
+      }},
+      { woche: 5, training: { 
+          Di: `Jogging 70%
+                60 min | 8km`, 
+          Do: `DL 75%
+                50 min | 7km`, 
+          Sa: `langer DL 70%
+                115 min | 15-16km`, 
+          So: `Jogging 70%
+                50 min | 7km` 
+      }},
+      { woche: 6, training: { 
+          Di: `3x2km in 13:16 (HM-Tempo)
+                6 min Trabpause | 11km`, 
+          Do: `Jogging 70% mit Steigerungen
+                40 min | 6km`, 
+          Sa: `Jogging 70%
+                20 min | 3km`, 
+          So: `Halbmarathon 2:20 h` 
+      }},
+    ],
+  },
   '2:10 h': {
     plan: [
       { woche: 1, training: { 
@@ -241,4 +304,4 @@ export const trainingsPlans = {
     },
 } as const;
 
-export type Zielzeit = '2:30 h' | '2:10 h' | '2:00 h' | '1:50 h' | '1:40 h';
+export type Zielzeit = '2:30 h' | '2:20 h'| '2:10 h' | '2:00 h' | '1:50 h' | '1:40 h';
