@@ -71,9 +71,10 @@ const DailyForecastChart: React.FC<DailyForecastChartProps> = ({ lat, lon }) => 
   };
 
   useEffect(() => {
+    if (!lat || !lon) return;
     const fetchWeather = async () => {
       try {
-        const response = await fetch(`/api/weather?lat=52.52&lon=13.405`);
+        const response = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
         const data = await response.json();
         setWeather(data);
         setLoading(false);
