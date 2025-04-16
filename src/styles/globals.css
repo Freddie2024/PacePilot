@@ -44,6 +44,28 @@ a {
   flex: 1;
 }
 
+.zielzeit-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.zielzeit-button:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.zielzeit-button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.btn-outline-info {
+  color: black !important;
+}
+
+.btn-success {
+  background-color: #4CAF50 !important;
+  border-color: #4CAF50 !important;
+}
 
 @media (prefers-color-scheme: dark) {
   html {
